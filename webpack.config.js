@@ -4,6 +4,7 @@ const path = require('path');
 const config = {
   entry: {
     room: './static/script/room.js',
+    sched: './static/script/sched/sched.js'
   },
   output: {
     filename: '[name].min.js',
