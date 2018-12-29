@@ -1,7 +1,7 @@
 import React from 'react'
 import { Draggable } from 'react-beautiful-dnd';
 import AccessTime from './AccessTime'
-import { Entry } from './StyledElelements.jsx';
+import { DurTime, Entry, Details, Duration } from './StyledElelements.jsx';
 
 const Break = (props) =>
 {
@@ -14,7 +14,10 @@ const Break = (props) =>
       {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
-      Break <AccessTime/> {lecture.duration} 
+      <Duration> 
+        <DurTime> {lecture.duration} </DurTime>
+      </Duration>
+      <Details> Break </Details>
       </Entry>
     )}
     </Draggable>

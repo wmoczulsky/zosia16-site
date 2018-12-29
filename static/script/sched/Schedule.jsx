@@ -116,12 +116,11 @@ class Schedule extends React.Component {
 
   newBreakToDestination = (result, state) => {
     const { source, destination, draggableId } = result;
-    if (destination.droppableId === "break") {
+    if (destination.droppableId === "lec") {
       return state;
     }
 
     const breakId = this.breakIdGenerator.getId();
-    console.log(breakId);
     let { droppableId, index } = destination;
     const destinationColumn = this.state.columns[droppableId];
     const destinationColumnIds = Array.from(destinationColumn.lectureIds);
@@ -176,11 +175,11 @@ class Schedule extends React.Component {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
       <Layout>
-      <LectureList {...lectures} allLectures={this.state.allLectures}/>
+      <LectureList key={"lec"} {...lectures} allLectures={this.state.allLectures}/>
       {days.map(dayId => {
         const day = this.state.columns[dayId];
         return (
-          <DaySchedule allLectures={this.state.allLectures} {...day}/>
+          <DaySchedule key={day.id} allLectures={this.state.allLectures} {...day}/>
         )
       })}
       </Layout>

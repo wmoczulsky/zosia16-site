@@ -4,9 +4,12 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import AccessTime from './AccessTime'
 import Break from './Break'
 import { 
-  Entry, 
+  Entry,
+  DurTime,
   ColumnContainer,
   EntryContainer,
+  Duration,
+  Details
 } from './StyledElelements';
 
 const BreakGenerator = () => {
@@ -36,9 +39,13 @@ const Lecture = (props) =>
       {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
+      <Duration> 
+        <DurTime> {lecture.duration} </DurTime>
+      </Duration>
+      <Details>
       <div> {lecture.title} </div>
       <div> {lecture.name} </div>
-      <div> <AccessTime/> {lecture.duration} </div>
+      </Details>
       </Entry>
     )}
     </Draggable>
@@ -55,11 +62,11 @@ class LectureList extends React.Component {
     const lecture = this.getLecture(lectureId);
     if (lecture.type === "lecture")
     {
-      return (<Lecture lecture={lecture} index={i}/>);
+      return (<Lecture key={lectureId} lecture={lecture} index={i}/>);
     }
     else if (lecture.type === "break")
     {
-      return (<Break lecture={lecture} index={i}/>);
+      return (<Break key={lectureId} lecture={lecture} index={i}/>);
     }
     else
     {

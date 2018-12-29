@@ -4,10 +4,13 @@ import { showTime } from './Helpers';
 import AccessTime from './AccessTime';
 import Break from './Break';
 import { 
-  Time, 
+  Time,
+  DurTime,
   Entry, 
   ColumnContainer,
   EntryContainer,
+  Duration,
+  Details,
 } from './StyledElelements';
 
 const ScheduleLecture = (props) => {
@@ -20,11 +23,15 @@ const ScheduleLecture = (props) => {
       {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
-      <Time> {showTime(startTime)} </Time>
-      <div> {lecture.title} </div>
-      <div> {lecture.name} </div>
-      <div> <AccessTime/> {lecture.duration} </div>
-      <Time> {showTime(endTime)} </Time>
+      <Duration>
+        <Time> {showTime(startTime)} </Time>
+        <DurTime> {lecture.duration} </DurTime>
+        <Time> {showTime(endTime)} </Time>
+      </Duration>
+      <Details>
+        <div> {lecture.title} </div>
+        <div> {lecture.name} </div>
+      </Details>
       </Entry>
     )}
     </Draggable>
@@ -41,6 +48,7 @@ class DaySchedule extends React.Component
     {
       return (
         <ScheduleLecture 
+        key={lectureId}
         lecture={lecture} 
         index={i}
         startTime={startTime}
@@ -49,7 +57,7 @@ class DaySchedule extends React.Component
     }
     else 
     {
-      return (<Break lecture={lecture} index={i}/>);	
+      return (<Break key={lectureId} lecture={lecture} index={i}/>);	
     }
   }
   /* eslint-disable no-unused-expressions */
