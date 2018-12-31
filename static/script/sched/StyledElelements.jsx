@@ -26,6 +26,7 @@ const DurTime = styled.div`
 `
 
 const Details = styled.div`
+  cursor: pointer;
   flex-grow: 1;
   padding-left: 5px;
 `;

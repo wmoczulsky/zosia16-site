@@ -20,17 +20,15 @@ const ScheduleLecture = (props) => {
     {(provided, snapshot) => (
       <Entry
       ref={provided.innerRef}
-      {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
-      <Duration>
+      <Duration {...provided.dragHandleProps}>
         <Time> {showTime(startTime)} </Time>
         <DurTime> {lecture.duration} </DurTime>
         <Time> {showTime(endTime)} </Time>
       </Duration>
-      <Details>
+      <Details onClick={() => props.focus(lecture.id)}>
         <div> {lecture.title} </div>
-        <div> {lecture.name} </div>
       </Details>
       </Entry>
     )}
@@ -49,6 +47,7 @@ class DaySchedule extends React.Component
       return (
         <ScheduleLecture 
         key={lectureId}
+        focus={this.props.focus}
         lecture={lecture} 
         index={i}
         startTime={startTime}
@@ -57,7 +56,7 @@ class DaySchedule extends React.Component
     }
     else 
     {
-      return (<Break key={lectureId} lecture={lecture} index={i}/>);	
+      return (<Break focus={this.props.focus} key={lectureId} lecture={lecture} index={i}/>);	
     }
   }
   /* eslint-disable no-unused-expressions */

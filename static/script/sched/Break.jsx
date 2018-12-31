@@ -11,13 +11,12 @@ const Break = (props) =>
     {(provided, snapshot) => (
       <Entry 
       ref={provided.innerRef} 
-      {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
-      <Duration> 
+      <Duration {...provided.dragHandleProps}> 
         <DurTime> {lecture.duration} </DurTime>
       </Duration>
-      <Details> Break </Details>
+      <Details onClick={() => props.focus(lecture.id)}> Break </Details>
       </Entry>
     )}
     </Draggable>

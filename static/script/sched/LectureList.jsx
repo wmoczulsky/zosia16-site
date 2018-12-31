@@ -36,15 +36,13 @@ const Lecture = (props) =>
     {(provided, snapshot) => (
       <Entry
       ref={provided.innerRef}
-      {...provided.dragHandleProps}
       {...provided.draggableProps}
       >
-      <Duration> 
+      <Duration {...provided.dragHandleProps}> 
         <DurTime> {lecture.duration} </DurTime>
       </Duration>
-      <Details>
+      <Details onClick={() => props.focus(lecture.id)}>
       <div> {lecture.title} </div>
-      <div> {lecture.name} </div>
       </Details>
       </Entry>
     )}
@@ -62,11 +60,11 @@ class LectureList extends React.Component {
     const lecture = this.getLecture(lectureId);
     if (lecture.type === "lecture")
     {
-      return (<Lecture key={lectureId} lecture={lecture} index={i}/>);
+      return (<Lecture focus={this.props.focus} key={lectureId} lecture={lecture} index={i}/>);
     }
     else if (lecture.type === "break")
     {
-      return (<Break key={lectureId} lecture={lecture} index={i}/>);
+      return (<Break focus={this.props.focus} key={lectureId} lecture={lecture} index={i}/>);
     }
     else
     {
@@ -76,6 +74,7 @@ class LectureList extends React.Component {
 
   /* eslint-disable no-unused-expressions */
   render() {
+
     return (
       <ColumnContainer>
       <div><h4>{this.props.title}</h4></div>

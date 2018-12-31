@@ -4,6 +4,7 @@ import LectureList from './LectureList'
 import DaySchedule from './DaySchedule'
 import { initial_lectures, initial_columns } from './data'
 import IdGenerator from './IdGenerator'
+import Details from './Details'
 import styled from 'styled-components'
 
 const Layout = styled.div`
@@ -16,6 +17,7 @@ class Schedule extends React.Component {
   state = {
     allLectures: initial_lectures,
     columns: initial_columns,
+    focusedLectureId: "1",
   };
 
   swapInSameColumn = (result, state) => {
@@ -29,7 +31,7 @@ class Schedule extends React.Component {
     newLectureIds.splice(destination.index, 0, draggableId);
 
     return {
-      allLectures: state.allLectures,
+      ...this.state,
       columns: {
         ...state.columns,
         [column.id]: {
@@ -49,7 +51,7 @@ class Schedule extends React.Component {
     newLectureIds.splice(source.index, 1);
 
     return {
-      allLectures: this.state.allLectures,
+      ...this.state,
       columns: {
         ...this.state.columns,
         [column.id]: {
@@ -74,7 +76,7 @@ class Schedule extends React.Component {
     destinationColumnIds.splice(index, 0, draggableId);
 
     return {
-      allLectures: this.state.allLectures,
+      ...this.state,
       columns: {
         ...this.state.columns,
         [sourceColumn.id]: {
@@ -127,6 +129,7 @@ class Schedule extends React.Component {
     destinationColumnIds.splice(index, 0, breakId);
 
     return {
+      ...this.state,
       allLectures: {
         ...this.state.allLectures,
         [breakId] : {
@@ -143,6 +146,37 @@ class Schedule extends React.Component {
         }
       }
     };
+  }
+
+  onSetLecture = lecture => {
+    if (lecture.id in this.state.allLectures)
+    {
+      this.setState({
+        ...this.state,
+        allLectures: {
+          ...this.state.allLectures,
+          [lecture.id]: lecture,
+        }
+      });
+    }
+  }
+
+  onFocus = lectureId => {
+    this.setState({
+      ...this.state,
+      focusedLectureId: lectureId,
+    });
+  }
+
+  onDragStart = result => {
+  }
+
+  onBeforeDragStart = result => {
+  }
+
+  onDragEnd = result => {
+    const { source, destination, draggableId } = result;
+
   }
 
   onDragEnd = result => {
@@ -168,22 +202,48 @@ class Schedule extends React.Component {
     this.setState(this.swap(result, this.state));
   }
 
+  exportSchedule = () => {
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(this.state, null, 2)], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "schedule.json";
+    element.click();
+  }
+
+
   render() {
     const lectures = this.state.columns["lec"];
     const days = ["thu", "fri", "sat"];
 
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-      <Layout>
-      <LectureList key={"lec"} {...lectures} allLectures={this.state.allLectures}/>
-      {days.map(dayId => {
-        const day = this.state.columns[dayId];
-        return (
-          <DaySchedule key={day.id} allLectures={this.state.allLectures} {...day}/>
-        )
-      })}
-      </Layout>
-      </DragDropContext>
+      <div>
+        <div>
+          <a onClick={this.exportSchedule} className="waves-effect waves-light btn">Export schedule</a>
+        </div>
+        <DragDropContext 
+          onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
+          onBeforeDragStart={this.onBeforeDragStart}>
+        <Layout>
+        <LectureList 
+          key={"lec"}
+          {...lectures}
+          allLectures={this.state.allLectures}
+          focus={this.onFocus}/>
+        {days.map(dayId => {
+          const day = this.state.columns[dayId];
+          return (
+            <DaySchedule 
+              key={day.id}
+              allLectures={this.state.allLectures}
+              {...day}
+              focus={this.onFocus}/>
+          )
+        })}
+        </Layout>
+        </DragDropContext>
+        <Details setLecture={this.onSetLecture} lecture={this.state.allLectures[this.state.focusedLectureId]}/>
+      </div>
     );
   }
 }
