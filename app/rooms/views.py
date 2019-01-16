@@ -2,7 +2,8 @@ import json
 import csv
 from io import TextIOWrapper
 
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import redirect, reverse, get_object_or_404
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
@@ -56,7 +57,7 @@ def index(request):
         'rooms': rooms,
         'rooms_json': rooms_json,
     }
-    return render(request, 'rooms/index.html', context)
+    return render_to_string(request, 'rooms/index.html', context)
 
 
 # GET
@@ -124,7 +125,7 @@ def csv_response(data, template, filename='file'):
     c = Context({
         'data': data,
     })
-    response.write(t.render(c))
+    response.write(t.render_to_string(c))
     return response
 
 
@@ -148,7 +149,7 @@ def report(request):
     if download == 'rooms':
         return csv_response(rooms, template='rooms/rooms.txt', filename='rooms')
 
-    return render(request, 'rooms/report.html', ctx)
+    return render_to_string(request, 'rooms/report.html', ctx)
 
 
 def handle_uploaded_file(zosia, csvfile):
@@ -171,4 +172,4 @@ def import_room(request):
             return HttpResponseRedirect(reverse('rooms_report'))
     else:
         form = UploadFileForm()
-    return render(request, 'rooms/import.html', {'form': form})
+    return render_to_string(request, 'rooms/import.html', {'form': form})

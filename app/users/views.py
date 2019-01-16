@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login
@@ -32,7 +33,7 @@ def profile(request):
         'current_prefs': current_prefs,
         'all_prefs': all_prefs
     }
-    return render(request, 'users/profile.html', ctx)
+    return render_to_string(request, 'users/profile.html', ctx)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -45,9 +46,9 @@ def signup(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save(request)
-            return render(request, 'users/signup_done.html', ctx)
+            return render_to_string(request, 'users/signup_done.html', ctx)
 
-    return render(request, 'users/signup.html', ctx)
+    return render_to_string(request, 'users/signup.html', ctx)
 
 
 @login_required
@@ -58,7 +59,7 @@ def account_edit(request):
         form.save()
         return redirect('accounts_profile')
     ctx = {'form': form}
-    return render(request, 'users/signup.html', ctx)
+    return render_to_string(request, 'users/signup.html', ctx)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -77,7 +78,7 @@ def activate(request, uidb64, token):
     ctx = {
         'user': action.user,
     }
-    return render(request, 'users/activate.html', ctx)
+    return render_to_string(request, 'users/activate.html', ctx)
 
 
 @login_required
@@ -96,7 +97,7 @@ def create_organization(request):
 def organizations(request):
     organizations = Organization.objects.all()
     ctx = {'organizations': organizations}
-    return render(request, 'users/organizations.html', ctx)
+    return render_to_string(request, 'users/organizations.html', ctx)
 
 
 @staff_member_required
@@ -114,7 +115,7 @@ def update_organization(request, pk=None):
         messages.success(request, _('Organization updated'))
         return redirect('organizations')
     ctx = {'form': form, 'organization': organization}
-    return render(request, 'users/organization_form.html', ctx)
+    return render_to_string(request, 'users/organization_form.html', ctx)
 
 
 @staff_member_required

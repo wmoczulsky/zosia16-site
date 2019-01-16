@@ -2,7 +2,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.shortcuts import redirect, get_object_or_404, reverse
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.utils.translation import ugettext_lazy as _
 from conferences.models import Zosia
@@ -19,7 +20,7 @@ def index(request):
     lectures = Lecture.objects.select_related('author').filter(
                 zosia=zosia).filter(accepted=True)
     ctx = {'objects': lectures}
-    return render(request, 'lectures/index.html', ctx)
+    return render_to_string(request, 'lectures/index.html', ctx)
 
 
 @staff_member_required()
@@ -31,7 +32,7 @@ def display_all_staff(request):
     zosia = Zosia.objects.find_active()
     lectures = Lecture.objects.select_related('author').filter(zosia=zosia)
     ctx = {'objects': lectures}
-    return render(request, 'lectures/all.html', ctx)
+    return render_to_string(request, 'lectures/all.html', ctx)
 
 
 @staff_member_required()
@@ -67,7 +68,7 @@ def lecture_add(request):
             return redirect('lectures_index')
         else:
             messages.error(request, _("Please review your form"))
-    return render(request, 'lectures/add.html', ctx)
+    return render_to_string(request, 'lectures/add.html', ctx)
 
 
 @staff_member_required()
@@ -92,7 +93,7 @@ def lecture_update(request, lecture_id=None):
             return redirect('lectures_all_staff')
         else:
             messages.error(request, _('Please review your form'))
-    return render(request, 'lectures/add.html', ctx)
+    return render_to_string(request, 'lectures/add.html', ctx)
 
 
 def schedule_display(request):
@@ -100,7 +101,7 @@ def schedule_display(request):
     try:
         schedule = Schedule.objects.get(zosia=zosia)
         ctx = {'schedule': schedule}
-        return render(request, 'lectures/schedule.html', ctx)
+        return render_to_string(request, 'lectures/schedule.html', ctx)
     except Schedule.DoesNotExist as e:
         messages.warning(request, _("Schedule is not defined yet."))
         return redirect('lectures_index')
@@ -115,4 +116,4 @@ def schedule_update(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-    return render(request, 'lectures/schedule_add.html', ctx)
+    return render_to_string(request, 'lectures/schedule_add.html', ctx)

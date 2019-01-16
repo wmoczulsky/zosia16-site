@@ -1,6 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import cache_page
@@ -16,7 +17,7 @@ from questions.forms import QAForm
 def index(request):
     qas = QA.objects.all()
     ctx = {'questions': qas}
-    return render(request, 'questions/index.html', ctx)
+    return render_to_string(request, 'questions/index.html', ctx)
 
 
 @require_http_methods(['GET'])
@@ -24,7 +25,7 @@ def index(request):
 def index_for_staff(request):
     qas = QA.objects.all()
     ctx = {'questions': qas}
-    return render(request, 'questions/index_staff.html', ctx)
+    return render_to_string(request, 'questions/index_staff.html', ctx)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -46,7 +47,7 @@ def update(request, question_id=None):
         else:
             messages.error(request, _('There has been error'))
     ctx = {'form': form, 'question': question}
-    return render(request, 'questions/update.html', ctx)
+    return render_to_string(request, 'questions/update.html', ctx)
 
 
 @require_http_methods(['GET'])

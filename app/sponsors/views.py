@@ -2,7 +2,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from sponsors.models import Sponsor
 from sponsors.forms import SponsorForm
@@ -12,7 +13,7 @@ from sponsors.forms import SponsorForm
 @require_http_methods(['GET'])
 def index(request):
     ctx = {'objects': Sponsor.objects.all()}
-    return render(request, 'sponsors/index.html', ctx)
+    return render_to_string(request, 'sponsors/index.html', ctx)
 
 
 @staff_member_required()
@@ -36,7 +37,7 @@ def update(request, sponsor_id=None):
         else:
             messages.error(request, _("There has been errors"))
 
-    return render(request, 'sponsors/update.html', ctx)
+    return render_to_string(request, 'sponsors/update.html', ctx)
 
 
 @staff_member_required()

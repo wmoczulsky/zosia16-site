@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
@@ -32,7 +33,7 @@ def user_preferences_index(request):
            'min_bonus': MIN_BONUS,
            'max_bonus': MAX_BONUS,
            'bonus_step': BONUS_STEP}
-    return render(request, 'conferences/user_preferences_index.html', ctx)
+    return render_to_string('conferences/user_preferences_index.html', context=ctx, request=request)
 
 
 @staff_member_required()
@@ -56,7 +57,7 @@ def user_preferences_edit(request, user_preferences_id=None):
         else:
             messages.error(request, _("Errors occured during validation"))
 
-    return render(request, 'conferences/user_preferences_edit.html', ctx)
+    return render_to_string('conferences/user_preferences_edit.html', context=ctx, request=request)
 
 
 @staff_member_required()
@@ -99,7 +100,7 @@ def index(request):
         context['gapi_place_src'] = GAPI_PLACE_BASE_URL + '?' + urlencode(query)
         # FIXME: Make sure this url starts with http. Django WILL try to make it relative otherwise
         context['zosia_url'] = zosia.place.url
-    return render(request, 'conferences/index.html', context)
+    return render_to_string('conferences/index.html', context=context, request=request)
 
 
 @login_required
@@ -133,7 +134,7 @@ def register(request, zosia_id):
         else:
             messages.error(request, _("There were errors"))
 
-    return render(request, 'conferences/register.html', ctx)
+    return render_to_string('conferences/register.html', context=ctx, request=request)
 
 
 @require_http_methods(['GET'])
@@ -142,13 +143,13 @@ def terms_and_conditions(request):
     if not zosia:
         raise Http404
     ctx = {'zosia': zosia}
-    return render(request, 'conferences/terms_and_conditions.html', ctx)
+    return render_to_string('conferences/terms_and_conditions.html', context=ctx, request=request)
 
 
 @staff_member_required
 @require_http_methods(['GET'])
 def admin_panel(request):
-    return render(request, 'conferences/admin.html')
+    return render_to_string(request, 'conferences/admin.html')
 
 
 @staff_member_required
@@ -157,7 +158,7 @@ def bus_admin(request):
     zosia = Zosia.objects.find_active()
     active_buses = Bus.objects.filter(zosia=zosia)
     ctx = {'zosia': zosia, 'buses': active_buses}
-    return render(request, 'conferences/bus.html', ctx)
+    return render_to_string('conferences/bus.html', context=ctx, request=request)
 
 
 @staff_member_required
@@ -166,7 +167,7 @@ def bus_people(request, pk):
     bus = get_object_or_404(Bus, pk=pk)
     users = UserPreferences.objects.select_related('user').filter(bus=bus)
     ctx = {'bus': bus, 'users': users}
-    return render(request, 'conferences/bus_users.html', ctx)
+    return render_to_string('conferences/bus_users.html', context=ctx, request=request)
 
 
 @staff_member_required
@@ -187,7 +188,7 @@ def bus_add(request, pk=None):
         messages.success(request, _('Bus has been saved'))
         return redirect('bus_admin')
     ctx = {'form': form, 'object': instance}
-    return render(request, 'conferences/bus_add.html', ctx)
+    return render_to_string('conferences/bus_add.html', context=ctx, request=request)
 
 
 @staff_member_required
@@ -195,7 +196,7 @@ def bus_add(request, pk=None):
 def conferences(request):
     conferences = Zosia.objects.all()
     ctx = {'conferences': conferences}
-    return render(request, 'conferences/conferences.html', ctx)
+    return render_to_string('conferences/conferences.html', context=ctx, request=request)
 
 
 @staff_member_required
@@ -214,4 +215,4 @@ def update_zosia(request, pk=None):
         return redirect('conferences')
 
     ctx = {'form': form, 'zosia': zosia}
-    return render(request, 'conferences/conference_add.html', ctx)
+    return render_to_string('conferences/conference_add.html', context=ctx, request=request)

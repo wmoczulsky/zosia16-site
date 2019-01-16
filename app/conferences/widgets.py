@@ -44,7 +44,7 @@ class OrgSelectWithAjaxAdd(Select):
     def __init__(self, attrs=None, choices=()):
         super().__init__(attrs=attrs, choices=choices)
 
-    def render(self, name, value, attrs=None):
+    def render_to_string(self, name, value, attrs=None):
         if value is None:
             value = ''
         attrs['class'] = attrs.get('class', '') + ' col s11'
